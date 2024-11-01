@@ -1,0 +1,7 @@
+.ipynb_checkpoints/*
+pyvenv.cfg
+lib/*
+lib64/*
+include/*
+bin/*
+roget_thesaurus_classification.egg-info/*
