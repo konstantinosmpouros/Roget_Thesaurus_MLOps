@@ -18,7 +18,7 @@ def load_dataset():
     return _data
 
 # Separate X and y according to prediction target
-def separate_data_section(data, target):
+def separate_data(data, target):
     try:
         if target == 'class':
             X = data.drop(config.TARGET_CLASS, axis=1)
