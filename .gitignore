@@ -5,3 +5,6 @@ lib64/*
 include/*
 bin/*
 roget_thesaurus_classification.egg-info/*
+prediction_model/datasets/Train_embeddings.faiss
+prediction_model/trained_models/class/xgboost_class_pipeline.joblib
+prediction_model/trained_models/section/xgboost_section_pipeline.joblib

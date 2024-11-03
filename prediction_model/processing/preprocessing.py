@@ -4,21 +4,26 @@ from pathlib import Path
 import os
 import sys
 import pandas as pd
+import numpy as np
 
 from umap import umap_ as umap
 
+import faiss
+
 import torch
-import tqdm
+from tqdm import tqdm
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
 
 PACKAGE_ROOT = Path(os.path.abspath(os.path.dirname(__file__))).parent.parent
 sys.path.append(str(PACKAGE_ROOT))
 
+from prediction_model.config import config
 
-class Gemma7B_Embeddings(BaseEstimator, TransformerMixin):
+
+class Gemma2B_Embeddings(BaseEstimator, TransformerMixin):
     def __init__(self):
-        model_name = "google/gemma-1.1-7b-it"
+        model_name = "google/gemma-1.1-2b-it"
         self.tokenizer = AutoTokenizer.from_pretrained(model_name)
         self.model = AutoModelForCausalLM.from_pretrained(
             model_name,
@@ -35,10 +40,13 @@ class Gemma7B_Embeddings(BaseEstimator, TransformerMixin):
         except Exception as ex:
             pass
 
-    def fit_transform(self, words_to_vectorize, batch_size=100):
+    def fit(self, X, y=None):
+        return self
+
+    def transform(self, X, batch_size=100):
         embeddings = []
-        for start in tqdm(range(0, len(words_to_vectorize), batch_size)):
-            batch = words_to_vectorize[start:start + batch_size].tolist()
+        for start in tqdm(range(0, len(X), batch_size)):
+            batch = X.iloc[start:start + batch_size, 0].tolist() 
 
             batch_tokenized  = self.tokenizer(batch,
                                  truncation=True,
@@ -53,13 +61,37 @@ class Gemma7B_Embeddings(BaseEstimator, TransformerMixin):
             batch_word_embedding  = last_hidden_states.mean(dim=1)
             embeddings.extend(batch_word_embedding.cpu().float().numpy())
 
-        return pd.Dataframe(embeddings)
+        return pd.DataFrame(embeddings)
 
+class SaveEmbedding(BaseEstimator, TransformerMixin):
+    def __init__(self):
+        self.save_path = os.path.join(config.DATAPATH, config.FAISS_NAME)
+
+    def fit(self, X, y=None):
+        return self
+
+    def transform(self, X):
+        if not os.path.exists(self.save_path):
+            d = X.shape[1]
+            index = faiss.IndexFlatL2(d)
+            index.add(np.ascontiguousarray(X.values.astype('float32')))
+            faiss.write_index(index, self.save_path)
+            
+            print('Embeddings have been saved successfully!!')
+            print('Path: ', self.save_path)
+        else:
+            print('Embeddings already exist!!')
+        return X
 
 class DimensionalityReduction(BaseEstimator, TransformerMixin):
-    def __init__(self, ):
-        self.dim_reduction = umap.UMAP(n_components=300,  n_jobs=-1, random_state=33)
+    def __init__(self):
+        self.dim_reduction = umap.UMAP(n_components=300, random_state=33)
 
-    def fit_transform(self, embeddings):
-        return self.dim_reduction.fit_transform(embeddings)
+    def fit(self, X, y=None):
+        return self
+
+    def transform(self, X):
+        reduced_embeddings =  self.dim_reduction.fit_transform(X)
+        print('Embeddings has been reduced to 300 dimensions successfully!!')
+        return pd.DataFrame(reduced_embeddings)
 
