@@ -24,15 +24,16 @@ class CustomPipeline():
 
     def create_pipeline(self):
         self.pipeline = Pipeline([
-                    ('Gemma2B_Embeddings', pp.Gemma2B_Embeddings()),
+                    ('Gemma7B_Embeddings', pp.Gemma7B_Embeddings()),
+                    ('StandarScaling', pp.StandarScaling()),
                     ('DimensionalityReduction', pp.DimensionalityReduction()),
-                    ('SaveEmbedding', pp.SaveEmbedding()),
-                    ('XGBoost', XGBClassifier(random_state=33))
+                    ('XGBoost', XGBClassifier(use_label_encoder=False, n_jobs=-1, random_state=33))
         ])
 
     def save_pipeline(self):
         joblib.dump(self.pipeline, self.save_path)
-        print('Model has been saved in the following path:  ', self.save_path)
+        print('Model has been saved successfully!!')
+        print('Path:', self.save_path)
 
     def load_pipeline(self):
         self.pipeline = joblib.load(self.save_path)

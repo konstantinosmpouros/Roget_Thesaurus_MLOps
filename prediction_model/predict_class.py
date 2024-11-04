@@ -16,7 +16,9 @@ def score_class():
 
     class_pipeline = CustomPipeline(config.TARGET_CLASS)
     class_pipeline.load_pipeline()
-    class_pipeline.pipeline.score(X, y)
+
+    score = class_pipeline.pipeline.score(X, y)
+    print('Accuracy: ', score)
 
 
 if __name__=='__main__':

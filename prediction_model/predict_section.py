@@ -16,7 +16,9 @@ def score_section():
 
     section_pipeline = CustomPipeline(config.TARGET_SECTION)
     section_pipeline.load_pipeline()
-    section_pipeline.pipeline.score(X, y)
+
+    score = section_pipeline.pipeline.score(X, y)
+    print('Accuracy: ', score)
 
 
 if __name__=='__main__':

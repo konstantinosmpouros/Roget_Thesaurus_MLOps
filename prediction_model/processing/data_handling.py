@@ -28,5 +28,5 @@ def split_data(X, y, test_size=0.2, random_state=33):
 
 def encode_y_data(y):
     encoder = LabelEncoder()
-    return encoder.fit_transform(y)
+    return encoder.fit_transform(y.values.ravel())
 

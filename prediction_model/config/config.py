@@ -20,6 +20,3 @@ CLASS_MODEL_PATH = os.path.join(PACKAGE_ROOT,'trained_models/class')
 SECTION_MODEL_NAME = 'xgboost_section_pipeline.joblib'
 SECTION_MODEL_PATH = os.path.join(PACKAGE_ROOT,'trained_models/section')
 
-# Faiss database
-FAISS_NAME = 'Train_embeddings.faiss'
-
