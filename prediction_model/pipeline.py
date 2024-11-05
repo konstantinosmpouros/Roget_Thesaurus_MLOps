@@ -24,10 +24,10 @@ class CustomPipeline():
 
     def create_pipeline(self):
         self.pipeline = Pipeline([
-                    ('Gemma7B_Embeddings', pp.Gemma7B_Embeddings()),
+                    ('Gemma2B_Embeddings', pp.Gemma2B_Embeddings()),
                     ('StandarScaling', pp.StandarScaling()),
                     ('DimensionalityReduction', pp.DimensionalityReduction()),
-                    ('XGBoost', XGBClassifier(use_label_encoder=False, n_jobs=-1, random_state=33))
+                    ('XGBoost', XGBClassifier(n_jobs=-1, random_state=33))
         ])
 
     def save_pipeline(self):

@@ -1,6 +1,6 @@
 # Roget Thesaurus Classification MLOps Project (UNDERDEVELOPMENT)
 
-This project is an end-to-end MLOps pipeline designed to classify words based on their semantic categories in Roget's Thesaurus. The pipeline extracts data from Roget's Thesaurus, generates embeddings using the Gemma 1.1 7B model, performs dimensionality reduction, and uses an XGBoost model to predict the semantic category or section for each word. The solution is packaged as a set of APIs to streamline embedding generation and classification tasks.
+This project is an end-to-end MLOps pipeline designed to classify words based on their semantic categories in Roget's Thesaurus. The pipeline extracts data from Roget's Thesaurus, generates embeddings using the Gemma 1.1 7B it model, performs dimensionality reduction, and uses an XGBoost model to predict the semantic category or section for each word. The solution is packaged as a set of APIs to streamline embedding generation and classification tasks.
 
 ## Project Overview
 

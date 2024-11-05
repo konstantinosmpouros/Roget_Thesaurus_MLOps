@@ -14,9 +14,9 @@ TARGET_SECTION = 'Section'
 
 
 # Model Variables
-CLASS_MODEL_NAME = 'xgboost_class_pipeline.joblib'
+CLASS_MODEL_NAME = 'class_pipeline.joblib'
 CLASS_MODEL_PATH = os.path.join(PACKAGE_ROOT,'trained_models/class')
 
-SECTION_MODEL_NAME = 'xgboost_section_pipeline.joblib'
+SECTION_MODEL_NAME = 'section_pipeline.joblib'
 SECTION_MODEL_PATH = os.path.join(PACKAGE_ROOT,'trained_models/section')
 

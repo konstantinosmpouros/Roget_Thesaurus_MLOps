@@ -6,7 +6,7 @@ import sys
 import pandas as pd
 
 from sklearn.preprocessing import StandardScaler
-from umap import umap_ as umap
+from umap import UMAP
 
 import torch
 from tqdm import tqdm
@@ -17,9 +17,9 @@ PACKAGE_ROOT = Path(os.path.abspath(os.path.dirname(__file__))).parent.parent
 sys.path.append(str(PACKAGE_ROOT))
 
 
-class Gemma7B_Embeddings(BaseEstimator, TransformerMixin):
+class Gemma2B_Embeddings(BaseEstimator, TransformerMixin):
     def __init__(self):
-        self.model_name = "google/gemma-1.1-7b-it"
+        self.model_name = "google/gemma-1.1-2b-it"
 
     def load_model(self):
         tokenizer = AutoTokenizer.from_pretrained(self.model_name)
@@ -28,23 +28,9 @@ class Gemma7B_Embeddings(BaseEstimator, TransformerMixin):
             device_map='auto',
             torch_dtype=torch.bfloat16, 
         )
-        model.eval()
-        self.move_to_gpu(model, tokenizer)
-        return tokenizer, model
 
-    def move_to_gpu(self, model, tokenizer):
-        device = 'cuda' if torch.cuda.is_available() else 'cpu'
-        try:
-            tokenizer.to(device)
-            model.to(device)
-        except Exception as ex:
-            pass
-    
-    def set_seed(self, seed=33):
-        torch.manual_seed(seed)
-        torch.cuda.manual_seed(seed)
-        torch.backends.cudnn.deterministic = True
-        torch.backends.cudnn.benchmark = False
+        model.eval()
+        return tokenizer, model
 
     def fit(self, X, y=None):
         return self
@@ -52,7 +38,6 @@ class Gemma7B_Embeddings(BaseEstimator, TransformerMixin):
     def transform(self, X, batch_size=100):
         embeddings = []
         tokenizer, model = self.load_model()
-        self.set_seed()
 
         for start in tqdm(range(0, len(X), batch_size)):
             batch = X.iloc[start:start + batch_size, 0].tolist() 
@@ -61,7 +46,7 @@ class Gemma7B_Embeddings(BaseEstimator, TransformerMixin):
                                  truncation=True,
                                  padding='max_length',
                                  max_length=20,
-                                 return_tensors='pt')
+                                 return_tensors='pt').to('cuda')
 
             with torch.no_grad():
                 outputs = model(**batch_tokenized, output_hidden_states=True)
@@ -88,7 +73,7 @@ class StandarScaling(BaseEstimator, TransformerMixin):
 
 class DimensionalityReduction(BaseEstimator, TransformerMixin):
     def __init__(self):
-        self.dim_reduction = umap.UMAP(n_components=300, n_jobs=-1)
+        self.dim_reduction = UMAP(n_components=300, n_jobs=-1)
 
     def fit(self, X, y=None):
         self.dim_reduction.fit(X)
