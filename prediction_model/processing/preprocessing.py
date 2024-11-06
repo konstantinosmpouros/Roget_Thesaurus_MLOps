@@ -43,10 +43,10 @@ class Gemma2B_Embeddings(BaseEstimator, TransformerMixin):
             batch = X.iloc[start:start + batch_size, 0].tolist() 
 
             batch_tokenized  = tokenizer(batch,
-                                 truncation=True,
-                                 padding='max_length',
-                                 max_length=20,
-                                 return_tensors='pt').to('cuda')
+                                         truncation=True,
+                                         padding='max_length',
+                                         max_length=20,
+                                         return_tensors='pt').to('cuda')
 
             with torch.no_grad():
                 outputs = model(**batch_tokenized, output_hidden_states=True)
@@ -58,7 +58,7 @@ class Gemma2B_Embeddings(BaseEstimator, TransformerMixin):
         print('Embeddings have been created successfully!!')
         return pd.DataFrame(embeddings)
 
-class StandarScaling(BaseEstimator, TransformerMixin):
+class StandardScaling(BaseEstimator, TransformerMixin):
     def __init__(self):
         self.scaler = StandardScaler()
 
@@ -68,7 +68,7 @@ class StandarScaling(BaseEstimator, TransformerMixin):
 
     def transform(self, X):
         scaled_x = self.scaler.transform(X)
-        print('Embeddings has been Standar Scaled successfully!!')
+        print('Embeddings have been Standar Scaled successfully!!')
         return pd.DataFrame(scaled_x)
 
 class DimensionalityReduction(BaseEstimator, TransformerMixin):
@@ -81,6 +81,6 @@ class DimensionalityReduction(BaseEstimator, TransformerMixin):
 
     def transform(self, X):
         reduced_embeddings =  self.dim_reduction.transform(X)
-        print('Embeddings has been reduced to 300 dimensions successfully!!')
+        print('Embeddings have been reduced to 300 dimensions successfully!!')
         return pd.DataFrame(reduced_embeddings)
 
