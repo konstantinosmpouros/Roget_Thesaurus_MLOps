@@ -6,6 +6,5 @@ include/*
 bin/*
 dist/*
 roget_thesaurus_classification.egg-info/*
-prediction_model/datasets/Train_embeddings.faiss
 prediction_model/trained_models/class/class_pipeline.joblib
 prediction_model/trained_models/section/section_pipeline.joblib

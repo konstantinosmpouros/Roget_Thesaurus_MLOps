@@ -1,0 +1,14 @@
+include *.txt
+include *.md
+include *.py
+include *.csv
+
+include ./test/*
+
+recursive-include ./prediction_model/*
+
+include prediction_model/trained_models/class/*.joblib
+include prediction_model/trained_models/section/*.joblib
+
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]

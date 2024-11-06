@@ -17,7 +17,7 @@ PACKAGE_ROOT = Path(os.path.abspath(os.path.dirname(__file__))).parent.parent
 sys.path.append(str(PACKAGE_ROOT))
 
 
-class Gemma2B_Embeddings(BaseEstimator, TransformerMixin):
+class Gemma_2B_Embeddings(BaseEstimator, TransformerMixin):
     def __init__(self):
         self.model_name = "google/gemma-1.1-2b-it"
 
@@ -73,7 +73,8 @@ class StandardScaling(BaseEstimator, TransformerMixin):
 
 class DimensionalityReduction(BaseEstimator, TransformerMixin):
     def __init__(self):
-        self.dim_reduction = UMAP(n_components=300, n_jobs=-1)
+        self.n_components = 300
+        self.dim_reduction = UMAP(n_components=self.n_components, n_jobs=-1)
 
     def fit(self, X, y=None):
         self.dim_reduction.fit(X)
@@ -81,6 +82,6 @@ class DimensionalityReduction(BaseEstimator, TransformerMixin):
 
     def transform(self, X):
         reduced_embeddings =  self.dim_reduction.transform(X)
-        print('Embeddings have been reduced to 300 dimensions successfully!!')
+        print(f'Embeddings have been reduced to {self.n_components} dimensions successfully!!')
         return pd.DataFrame(reduced_embeddings)
 

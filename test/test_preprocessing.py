@@ -10,7 +10,7 @@ PACKAGE_ROOT = Path(os.path.abspath(os.path.dirname(__file__))).parent
 sys.path.append(str(PACKAGE_ROOT))
 
 from prediction_model.config import config
-from prediction_model.processing.preprocessing import Gemma2B_Embeddings, StandardScaling
+from prediction_model.processing.preprocessing import Gemma_2B_Embeddings, StandardScaling
 from prediction_model.pipeline import CustomPipeline
 
 
@@ -18,7 +18,7 @@ pipelines = [CustomPipeline(config.TARGET_CLASS), CustomPipeline(config.TARGET_S
 
 @pytest.fixture
 def gemma2b_layer():
-    return Gemma2B_Embeddings()
+    return Gemma_2B_Embeddings()
 
 
 # Test the gemma model is loaded properly
