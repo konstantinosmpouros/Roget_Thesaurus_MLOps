@@ -58,9 +58,9 @@ setup(
         "License :: OSI Approved :: MIT License",
         'Programming Language :: Python',
         "Programming Language :: Python :: 3",
-        'Programming Language :: Python :: 3.10.12',
+        'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: Implementation :: CPython',
-        'Programming Language :: Python :: Implementation :: PyPy'
+        'Programming Language :: Python :: Implementation :: PyPy',
         "Operating System :: POSIX :: Linux"
     ]
 )

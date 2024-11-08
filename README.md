@@ -1,18 +1,43 @@
 # Roget Thesaurus Classification MLOps Project (UNDERDEVELOPMENT)
 
-This project is an end-to-end MLOps pipeline designed to classify words based on their semantic categories in Roget's Thesaurus. The pipeline extracts data from Roget's Thesaurus, generates embeddings using the Gemma 1.1 7B it model, performs dimensionality reduction, and uses an XGBoost model to predict the semantic category or section for each word. The solution is packaged as a set of APIs to streamline embedding generation and classification tasks.
+This project is an end-to-end MLOps pipeline designed to classify words based on their semantic categories in Roget's Thesaurus.
+The pipeline loads data previously extracted from [Roget's Thesaurus](https://www.gutenberg.org/cache/epub/22/pg22-images.html), generates embeddings using the Gemma 1.1 2B it model, performs dimensionality reduction and Standard Scaling, and uses an XGBoost model to predict the semantic category or section for each word.
 
-## Project Overview
+## Installation and Dependencies
 
-1. **Embedding Generation**: Generate embeddings for each word using the Gemma 1.1 7B model.
-2. **Dimensionality Reduction**: Apply dimensionality reduction to the embeddings to improve computational efficiency.
-3. **Classification Model**: Train an XGBoost model to classify words into semantic categories based on the reduced embeddings.
-4. **APIs**: Deploy REST APIs to generate embeddings for new words, perform classification, and retrieve results.
+The code is available as a python library through TestPyPI by running the following command in the CLI:
 
+```
+pip install -i https://test.pypi.org/simple/ roget-thesaurus-classification
+```
 
+To run train and predict with the pipeline, make sure you have the necessary libraries by running the command with the downloaded requirements file:
 
+```
+pip install -r requirements.txt
+```
 
+## Pipeline Overview
 
+The pipeline consists of the following key stages:
 
+1. Data Loading: The dataset is loaded from the Roget's Thesaurus Gutenberg Project.
 
+2. Embedding Generation: Word embeddings are generated using the Gemma 1.1 2B model, which converts words into dense vector representations based on their semantic meanings.
 
+3. Standard Scaling: The embeddings are standardized to ensure that the features have a mean of 0 and a standard deviation of 1, helping improve the performance of downstream models.
+
+4. Dimensionality Reduction: We apply UAMP dimensionality reduction techniques to reduce the complexity of the embeddings.
+
+5. Classification: An XGBoost classifier is trained to predict the semantic category (or section) for each word, based on the processed embeddings.
+
+## Project Structure
+
+![alt text](images/image.png)
+
+## TODO
+mlflow
+MLApps
+Jenkins
+fastapi
+docker

@@ -1,14 +1,43 @@
-include *.txt
-include *.md
-include *.py
-include *.csv
+include setup.py
+include requirements.txt
+include README.md
+include prediction_model/VERSION
 
-include ./test/*
 
-recursive-include ./prediction_model/*
+# Include all CSV files in the datasets directory
+recursive-include prediction_model/datasets *.csv
 
-include ./prediction_model/trained_models/class/*.joblib
-include ./prediction_model/trained_models/section/*.joblib
 
-recursive-exclude * __pycache__
-recursive-exclude * *.py[co]
+# Exclude the model joblib files in trained_models to reduce the package size
+recursive-exclude prediction_model/trained_models *.joblib
+
+
+# Include all Python source files
+recursive-include prediction_model *.py
+
+
+# Include the shell script for running the project
+include prediction_model/run_scripts.sh
+
+
+# Include pytest configuration and test files
+recursive-include test *.py
+include test/pytest.ini
+
+
+
+# Exclude the virtual environment directory and build artifacts
+prune myenv
+prune mlruns
+prune dist
+prune *.egg-info
+
+
+# Exclude cache files and unnecessary directories
+global-exclude __pycache__/*
+global-exclude *.pyc
+global-exclude *.pyo
+global-exclude .pytest_cache/*
+global-exclude prediction_model/__pycache__/*
+global-exclude prediction_model/config/__pycache__/*
+global-exclude prediction_model/processing/__pycache__/*
