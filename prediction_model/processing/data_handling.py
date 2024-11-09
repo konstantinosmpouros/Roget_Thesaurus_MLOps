@@ -26,6 +26,7 @@ def separate_data(data, target):
 def split_data(X, y, test_size=0.2, random_state=33):
     return train_test_split(X, y, test_size=test_size, random_state=random_state)
 
+# Encode y labels
 def encode_y_data(y):
     encoder = LabelEncoder()
     return encoder.fit_transform(y.values.ravel())

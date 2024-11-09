@@ -7,13 +7,13 @@ The pipeline loads data previously extracted from [Roget's Thesaurus](https://ww
 
 The code is available as a python library through TestPyPI by running the following command in the CLI:
 
-```
+```bash
 pip install -i https://test.pypi.org/simple/ roget-thesaurus-classification
 ```
 
 To run train and predict with the pipeline, make sure you have the necessary libraries by running the command with the downloaded requirements file:
 
-```
+```bash
 pip install -r requirements.txt
 ```
 
@@ -36,6 +36,7 @@ The pipeline consists of the following key stages:
 ![alt text](images/image.png)
 
 ## TODO
+
 mlflow
 MLApps
 Jenkins

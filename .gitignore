@@ -3,3 +3,4 @@ dist/*
 myenv/*
 prediction_model/trained_models/class/class_pipeline.joblib
 prediction_model/trained_models/section/section_pipeline.joblib
+mlflow/datasets/Word_embeddings.faiss
