@@ -21,15 +21,15 @@ pip install -r requirements.txt
 
 The pipeline consists of the following key stages:
 
-1. Data Loading: The dataset is loaded from the Roget's Thesaurus Gutenberg Project.
+1. **Embedding Generation**: Word embeddings are generated using the Gemma 1.1 2B model, which converts words into dense vector representations based on their semantic meanings.
 
-2. Embedding Generation: Word embeddings are generated using the Gemma 1.1 2B model, which converts words into dense vector representations based on their semantic meanings.
+2. **Standard Scaling**: The embeddings are standardized to ensure that the features have a mean of 0 and a standard deviation of 1, helping improve the performance of downstream models.
 
-3. Standard Scaling: The embeddings are standardized to ensure that the features have a mean of 0 and a standard deviation of 1, helping improve the performance of downstream models.
+3. **Dimensionality Reduction**: We apply UAMP dimensionality reduction techniques to reduce the complexity of the embeddings.
 
-4. Dimensionality Reduction: We apply UAMP dimensionality reduction techniques to reduce the complexity of the embeddings.
+4. **Standard Scaling**: The embeddings are standardized to ensure that the features have a mean of 0 and a standard deviation of 1, helping improve the performance of prediction models.
 
-5. Classification: An XGBoost classifier is trained to predict the semantic category (or section) for each word, based on the processed embeddings.
+5. **Classification**: An XGBoost classifier is trained to predict the semantic category (or section) for each word, based on the processed embeddings.
 
 ## Project Structure
 

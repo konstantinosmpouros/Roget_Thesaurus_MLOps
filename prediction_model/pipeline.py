@@ -25,8 +25,9 @@ class CustomPipeline():
     def create_pipeline(self):
         self.pipeline = Pipeline([
                     ('Gemma_2B_Embeddings', pp.Gemma_2B_Embeddings()),
-                    ('StandarScaling', pp.StandardScaling()),
+                    ('StandarScaling_1', pp.StandardScaling()),
                     ('DimensionalityReduction', pp.DimensionalityReduction()),
+                    ('StandarScaling_2', pp.StandardScaling()),
                     ('XGBoost', XGBClassifier(n_jobs=-1, random_state=33))
         ])
 
