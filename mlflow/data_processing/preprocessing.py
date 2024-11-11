@@ -33,10 +33,17 @@ class Gemma_2B_Embeddings(BaseEstimator, TransformerMixin):
         model.eval()
         return tokenizer, model
 
+    def set_seed(self):
+        torch.manual_seed(33)
+        torch.cuda.manual_seed_all(33)
+        torch.backends.cudnn.deterministic = True
+        torch.backends.cudnn.benchmark = False
+
     def fit(self, X, y=None):
         return self
 
     def transform(self, X, batch_size=100):
+        self.set_seed()
         embeddings = []
         tokenizer, model = self.load_model()
 
@@ -59,7 +66,6 @@ class Gemma_2B_Embeddings(BaseEstimator, TransformerMixin):
         print('Embeddings have been created successfully!!')
         return pd.DataFrame(embeddings)
 
-
 class StandardScaling(BaseEstimator, TransformerMixin):
     def __init__(self):
         self.scaler = StandardScaler()
@@ -73,11 +79,10 @@ class StandardScaling(BaseEstimator, TransformerMixin):
         print('Embeddings have been Standar Scaled successfully!!')
         return pd.DataFrame(scaled_x)
 
-
 class DimensionalityReduction(BaseEstimator, TransformerMixin):
     def __init__(self):
         self.n_components = 300
-        self.dim_reduction = UMAP(n_components=self.n_components, n_jobs=-1)
+        self.dim_reduction = UMAP(n_components=self.n_components, random_state=33)
 
     def fit(self, X, y=None):
         self.dim_reduction.fit(X)
@@ -87,7 +92,6 @@ class DimensionalityReduction(BaseEstimator, TransformerMixin):
         reduced_embeddings =  self.dim_reduction.transform(X)
         print(f'Embeddings have been reduced to {self.n_components} dimensions successfully!!')
         return pd.DataFrame(reduced_embeddings)
-
 
 class SaveEmbeddings(BaseEstimator, TransformerMixin):
     def __init__(self):
@@ -108,7 +112,6 @@ class SaveEmbeddings(BaseEstimator, TransformerMixin):
 
     def transform(self, X):
         return self
-
 
 class CustomPipeline():
     def __init__(self):
