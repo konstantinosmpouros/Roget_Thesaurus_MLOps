@@ -29,7 +29,7 @@ The pipeline consists of the following key stages:
 
 4. **Standard Scaling**: The embeddings are standardized to ensure that the features have a mean of 0 and a standard deviation of 1, helping improve the performance of prediction models.
 
-5. **Classification**: An XGBoost classifier is trained to predict the semantic category (or section) for each word, based on the processed embeddings.
+5. **Classification**: An LightGBM classifier is trained to predict the semantic category (or section) for each word, based on the processed embeddings.
 
 ## Project Structure
 
