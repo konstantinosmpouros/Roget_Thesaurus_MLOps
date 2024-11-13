@@ -21,17 +21,14 @@ from sklearn.pipeline import Pipeline
 class Gemma_2B_Embeddings(BaseEstimator, TransformerMixin):
     def __init__(self):
         self.model_name = "google/gemma-1.1-2b-it"
-
-    def load_model(self):
-        tokenizer = AutoTokenizer.from_pretrained(self.model_name)
-        model = AutoModelForCausalLM.from_pretrained(
+        self.tokenizer = AutoTokenizer.from_pretrained(self.model_name)
+        self.model = AutoModelForCausalLM.from_pretrained(
             self.model_name,
             device_map='auto',
             torch_dtype=torch.bfloat16, 
         )
-
-        model.eval()
-        return tokenizer, model
+        
+        self.model.eval()
 
     def set_seed(self):
         torch.manual_seed(33)
@@ -45,19 +42,18 @@ class Gemma_2B_Embeddings(BaseEstimator, TransformerMixin):
     def transform(self, X, batch_size=100):
         self.set_seed()
         embeddings = []
-        tokenizer, model = self.load_model()
 
         for start in tqdm(range(0, len(X), batch_size)):
             batch = X.iloc[start:start + batch_size, 0].tolist() 
 
-            batch_tokenized  = tokenizer(batch,
+            batch_tokenized  = self.tokenizer(batch,
                                          truncation=True,
                                          padding='max_length',
                                          max_length=20,
                                          return_tensors='pt').to('cuda')
 
             with torch.no_grad():
-                outputs = model(**batch_tokenized, output_hidden_states=True)
+                outputs = self.model(**batch_tokenized, output_hidden_states=True)
 
             last_hidden_states = outputs.hidden_states[-1]
             batch_word_embedding  = last_hidden_states.mean(dim=1)
@@ -95,8 +91,14 @@ class DimensionalityReduction(BaseEstimator, TransformerMixin):
 
 class SaveEmbeddings(BaseEstimator, TransformerMixin):
     def __init__(self):
-        self.path = os.path.join(PACKAGE_ROOT, 'datasets/Word_embeddings.faiss')
-    
+        self.path = os.path.join(PACKAGE_ROOT, 'datasets/Train_word_embeddings.faiss')
+
+    def change_to_test(self):
+        self.path = os.path.join(PACKAGE_ROOT, 'datasets/Test_word_embeddings.faiss')
+
+    def change_to_train(self):
+        self.path = os.path.join(PACKAGE_ROOT, 'datasets/Train_word_embeddings.faiss')
+
     def fit(self, X, y=None):
         try:
             d = X.shape[1]
@@ -111,6 +113,7 @@ class SaveEmbeddings(BaseEstimator, TransformerMixin):
             print(f"Error in saving embeddings in the vector db: {str(e)}")
 
     def transform(self, X):
+        self.fit(X)
         return self
 
 class CustomPipeline():

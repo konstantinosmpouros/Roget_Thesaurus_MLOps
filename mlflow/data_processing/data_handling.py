@@ -32,8 +32,11 @@ def encode_y_data(y):
     encoder = LabelEncoder()
     return pd.DataFrame(encoder.fit_transform(y.values.ravel()))
 
-def load_embeddings():
-    path = os.path.join(PACKAGE_ROOT, 'datasets/Word_embeddings.faiss')
+def load_embeddings(target):
+    if target == 'train':
+        path = os.path.join(PACKAGE_ROOT, 'datasets/Train_word_embeddings.faiss')
+    elif target == 'test':
+        path = os.path.join(PACKAGE_ROOT, 'datasets/Test_word_embeddings.faiss')
     
     index = faiss.read_index(path)
     d = index.d
