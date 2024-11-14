@@ -9,3 +9,4 @@ mlflow/datasets/Test_word_embeddings.faiss
 mlflow/datasets/Train_word_embeddings.faiss
 mlflow/mlruns/*
 mlflow/TODO.txt
+mlflow/mlflow_env/*

@@ -4,14 +4,11 @@ include README.md
 include prediction_model/VERSION
 include images/*
 
-
 # Include all CSV files in the datasets directory
 recursive-include prediction_model/datasets *.csv
 
-
 # Include all Python source files
 recursive-include prediction_model *.py
-
 
 # Include the shell script for running the project
 include prediction_model/run_scripts.sh
@@ -22,21 +19,15 @@ include prediction_model/run_scripts.sh
 
 
 
-# Exclude pytest configuration and test files
-recursive-exclude test *.py
-exclude test/pytest.ini
-
-
 # Exclude the model joblib files in trained_models to reduce the package size
 recursive-exclude prediction_model/trained_models *.joblib
-
 
 # Exclude the virtual environment directory and build artifacts
 prune myenv
 prune dist
 prune *.egg-info
 prune mlflow
-
+prune test
 
 # Exclude cache files and unnecessary directories
 global-exclude __pycache__/*

@@ -1,0 +1,9 @@
+name: Roget_Classification
+
+python_env: python_env.yaml
+
+entry_points:
+  main:
+    parameters:
+      target: {type: str, default: 'Class'}
+    command: 'python3 mlflow_experiments.py {target}'

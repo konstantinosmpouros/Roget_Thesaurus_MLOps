@@ -1,2 +1,0 @@
-python3 mlflow_experiments.py Class
-python3 mlflow_experiments.py Section
