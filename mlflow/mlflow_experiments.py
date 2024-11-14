@@ -146,8 +146,10 @@ def objective(trial, model_name, X_train, y_train, X_test, y_test):
     return accuracy
 
 def run_optuna_study(model_name, X_train, y_train, X_test, y_test, n_trials=20):
+    # Mute warnings
     logging.basicConfig(level=logging.WARNING)
     
+    # Initialize the study name and run it
     study_name = f"{model_name}_optimization"
     study = optuna.create_study(direction='maximize', study_name=study_name)
     study.optimize(
@@ -155,33 +157,20 @@ def run_optuna_study(model_name, X_train, y_train, X_test, y_test, n_trials=20):
         n_trials=n_trials,
     )
     
+    # Retrieve the best parameters for the current model, initialize it and train it
     best_params = study.best_trial.params
     best_model = models[model_name](**best_params, random_state=33)
     best_model.fit(X_train, y_train)
     
     return best_model
 
-def plot_confusion_matrix(y_test, y_pred, target, model_name):
+def plot_confusion_matrix(y_test, y_pred, target, model_name, labels, figsize=(15, 9)):
     # Generate the confusion matrix plot
-    plt.figure(figsize=(15, 9))
+    plt.figure(figsize=figsize)
 
     cm = confusion_matrix(y_test, y_pred)
     cm_percentage = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis] * 100
     cm_percentage_text = np.array([["{:.2f}%".format(value) for value in row] for row in cm_percentage])
-
-    # Format the labels
-    labels = np.unique(y_test)
-
-    def fix_label(labels, target):
-        if target == 'Class':
-            class_pattern = r"(CLASS\s+[IVXLCDM]+)"
-            labels = [re.sub(class_pattern, "", str(label)) for label in labels]
-        elif target == 'Section':
-            section_pattern = r"(SECTION\s+[IVXLCDM]+)"
-            labels = [re.sub(section_pattern, "", str(label)) for label in labels]
-        return labels
-
-    labels = fix_label(labels, target)
 
     # Plot the heatmap
     sns.heatmap(cm_percentage,
@@ -195,6 +184,7 @@ def plot_confusion_matrix(y_test, y_pred, target, model_name):
                 vmax=100
     )
 
+    # Style the plot
     plt.title(f"{model_name} Confusion Matrix")
     plt.xlabel("Predicted")
     plt.ylabel("Actual")
@@ -203,7 +193,7 @@ def plot_confusion_matrix(y_test, y_pred, target, model_name):
     plt.savefig(f"plots/{model_name}_{target}_confusion_matrix.png")
     plt.close()
 
-def plot_roc_auc_curve(y_test, model, X_test, target, model_name):
+def plot_roc_auc_curve(y_test, model, X_test, target, model_name, figsize=(15, 9)):
     # Generate the roc auc curve for Multi-class problem
     y_test_bin = label_binarize(y_test, classes=np.unique(y_test))
     n_classes = y_test_bin.shape[1]
@@ -213,37 +203,57 @@ def plot_roc_auc_curve(y_test, model, X_test, target, model_name):
     roc_auc = roc_auc_score(y_test_bin, y_pred_prob, average='weighted', multi_class='ovr')
 
     # Plot ROC Curve for each class
-    plt.figure(figsize=(10, 7))
+    plt.figure(figsize=figsize)
     for i in range(n_classes):
         fpr, tpr, _ = roc_curve(y_test_bin[:, i], y_pred_prob[:, i])
         auc_score = auc(fpr, tpr)
         plt.plot(fpr, tpr, lw=2, label=f"{target} {i} (AUC = {auc_score:.2f})")
 
+    # Style the plot
     plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
     plt.xlim([0.0, 1.0])
     plt.ylim([0.0, 1.05])
     plt.xlabel('False Positive Rate')
     plt.ylabel('True Positive Rate')
     plt.title(f"{model_name} ROC Curve (Multi-class)")
-    plt.legend(loc="lower right")
-    plt.tight_layout()
+    plt.legend(loc="center left", bbox_to_anchor=(1, 0.5), fontsize='small')
+    plt.tight_layout(rect=[0, 0, 0.8, 1])
     plt.savefig(f"plots/{model_name}_{target}_roc_curve.png")
     plt.close()
     
     return roc_auc
 
 def metrics_and_plots(model, X_test, y_test, model_name, target):
+    # Make the predictions
     y_pred = model.predict(X_test)
+
+    # Format-fix the labels for the plots
+    labels = np.unique(y_test)
+
+    def fix_label(labels, target):
+        # Remove the Class/Section and the latin number for every category
+        if target == 'Class':
+            class_pattern = r"(CLASS\s+[IVXLCDM]+)"
+            labels = [re.sub(class_pattern, "", str(label)).strip() for label in labels]
+        elif target == 'Section':
+            section_pattern = r"(SECTION\s+[IVXLCDM]+\.)"
+            labels = [re.sub(section_pattern, "", str(label)).strip() for label in labels]
+        return labels
+
+    labels = fix_label(labels, target)
 
     # Generate the metric according to the predictions
     accuracy = accuracy_score(y_test, y_pred)
     f1 = f1_score(y_test, y_pred, average='weighted')
     precision = precision_score(y_test, y_pred, average='weighted')
 
-    # Plot the confusion matrix
-    plot_confusion_matrix(y_test, y_pred, target, model_name)
-    # Plot the roc auc curve for Multi-class problem
-    roc_auc = plot_roc_auc_curve(y_test, model, X_test, target, model_name)
+    # Plot the confusion matrix and roc auc curve for Multi-class problem
+    if target == 'Class':
+        plot_confusion_matrix(y_test, y_pred, target, model_name, labels)
+        roc_auc = plot_roc_auc_curve(y_test, model, X_test, target, model_name)
+    else:
+        plot_confusion_matrix(y_test, y_pred, target, model_name, labels, figsize=(31,25))
+        roc_auc = plot_roc_auc_curve(y_test, model, X_test, target, model_name)
 
     return accuracy, precision, f1, roc_auc
 
@@ -308,6 +318,7 @@ if __name__ == '__main__':
                                       y_test)
         print(f'Best optuna optimized {model_name} accuracy: {best_trial.score(X_test, y_test)}')
         
+        # Save parameters, model and tags for this model
         print(f'Logging best optuna {model_name} model and parameters')
         mlflow_logging(best_trial, model_name, target)
         print('Model and parameters successfully saved!!\n\n')
