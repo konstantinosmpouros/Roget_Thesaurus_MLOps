@@ -39,9 +39,9 @@ from data_processing.data_handling import split_data, encode_y_data
 # Define models
 models = {
     'SGDClassifier': SGDClassifier,
-    'SupportVectorClassifier': SVC,
-    'DecisionTreeClassifier': DecisionTreeClassifier,
-    'RandomForestClassifier': RandomForestClassifier,
+    # 'SupportVectorClassifier': SVC,
+    # 'DecisionTreeClassifier': DecisionTreeClassifier,
+    # 'RandomForestClassifier': RandomForestClassifier,
     'XGBClassifier': XGBClassifier,
     'LGBMClassifier': LGBMClassifier,
 }
@@ -263,10 +263,6 @@ def metrics_and_plots(model, X_test, y_test, model_name, target):
     return accuracy, precision, f1, roc_auc
 
 def mlflow_logging(model, model_name, target):
-    # Set the url and the experiment name
-    mlflow.set_experiment("Roget_Classification")
-    mlflow.set_tracking_uri("http://127.0.0.1:5000")
-
     with mlflow.start_run() as run:
         # Set needed tags (run id, target and the models name)
         run_id = run.info.run_id
@@ -299,21 +295,25 @@ if __name__ == '__main__':
     # Set the CLI parameters
     target = set_args()
 
+    # Set the url and the experiment name for mlflow
+    mlflow.set_experiment("Roget_Classification")
+    mlflow.set_tracking_uri("http://127.0.0.1:5000")
+
     for model_name in models.keys():
         # Get the data (Train + test, embeddings and labels)
         if model_name in ['XGBClassifier']:
             X_train, X_test, y_train, y_test = get_data(target, encode=True)
         else:
             X_train, X_test, y_train, y_test = get_data(target)
-        
+
         # Train and evaluate a non optimized model
         print(f'Non optimized {model_name}...')
-        
+
         model = models[model_name](random_state=33)
         model.fit(X_train, y_train)
-        
+
         print(f'Non optimized {model_name} accuracy: {model.score(X_test, y_test)}\n')
-        
+
         # Train an optuna optimized model
         print(f"Optimizing {model_name}...")
         best_trial = run_optuna_study(model_name,
@@ -322,9 +322,8 @@ if __name__ == '__main__':
                                       X_test,
                                       y_test)
         print(f'Best optuna optimized {model_name} accuracy: {best_trial.score(X_test, y_test)}')
-        
+
         # Save parameters, model and tags for this model
         print(f'Logging best optuna {model_name} model and parameters')
         mlflow_logging(best_trial, model_name, target)
         print('Model and parameters successfully saved!!\n\n')
-        
