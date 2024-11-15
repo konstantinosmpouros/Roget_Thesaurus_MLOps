@@ -34,8 +34,8 @@ class_labels = load_y_labels('CLASS')
 section_labels = load_y_labels('SECTION')
 
 # Models uri
-class_model_uri = 'runs:/a5ea513ef1b348f6ae209c85d8c0e7db/LGBMClassifier'
-section_model_uri = 'runs:/50700ad801d54235a2fbc5aa459ae0fe/LGBMClassifier'
+class_model_uri = 'runs:/a5ea513ef1b348f6ae209c85d8c0e7db/LGBMClassifier' # The uris will be different if you run the project
+section_model_uri = 'runs:/50700ad801d54235a2fbc5aa459ae0fe/LGBMClassifier' # The uris will be different if you run the project
 
 # Load models as a PyFuncModel
 class_model = mlflow.pyfunc.load_model(class_model_uri)

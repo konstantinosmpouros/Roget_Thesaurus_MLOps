@@ -11,13 +11,17 @@ This mlflow project is dedicated in the optimazation of the machine learning mod
 
 To run the mlflow project you can use the run_project.sh script. Be aware that before running the project you need to go to the data_processing directory and run the embeddings_generation.py. The requirements to run this python script and the mlflow project are in the requirement file. Please be sure that you have installed in you os the pyenv cause is need to run the mlflow project.
 
-To run the embeddings_generation.py
+To run the embeddings_generation.py on your virtual enviroment:
+
+```bash
+pip install -r requirements.txt
+```
 
 ```bash
 python3 embeddings_generation.py
 ```
 
-To run the project since you have already generated the embeddings uses these command for the Class and the Section
+To run the project since you have already generated the embeddings use these command for the Class and the Section:
 
 ```bash
 mlflow run . --experiment-name Roget_Classification
@@ -25,4 +29,16 @@ mlflow run . --experiment-name Roget_Classification
 
 ```bash
 mlflow run . --experiment-name Roget_Classification -P target=Section
+```
+
+To run a local server with one of the trained models are a rest api use the command and replace the tag with the models id from the mlflow ui artifacts:
+
+```bash
+mlflow models serve -m runs:/<RUN_ID>/model --port 9000
+```
+
+The url to communicate with the rest api is the following and an exaple body for a request can be found in the Postman_body.txt:
+
+```text
+http://127.0.0.1:9000/invocations
 ```
