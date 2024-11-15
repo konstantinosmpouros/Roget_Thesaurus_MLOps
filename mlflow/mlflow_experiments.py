@@ -164,12 +164,17 @@ def run_optuna_study(model_name, X_train, y_train, X_test, y_test, n_trials=20):
     
     return best_model
 
-def plot_confusion_matrix(y_test, y_pred, target, model_name, labels, figsize=(15, 9)):
+def plot_confusion_matrix(y_test, y_pred, target, model_name, fixed_labels, figsize=(15, 9)):
     # Generate the confusion matrix plot
     plt.figure(figsize=figsize)
 
     cm = confusion_matrix(y_test, y_pred)
-    cm_percentage = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis] * 100
+    cm_sum = cm.sum(axis=1)[:, np.newaxis]
+
+    # Calculate percentages
+    cm_percentage = (cm.astype('float') / cm_sum) * 100
+
+    # Format the text for display
     cm_percentage_text = np.array([["{:.2f}%".format(value) for value in row] for row in cm_percentage])
 
     # Plot the heatmap
@@ -177,8 +182,8 @@ def plot_confusion_matrix(y_test, y_pred, target, model_name, labels, figsize=(1
                 annot=cm_percentage_text,
                 fmt="",
                 cmap="Blues",
-                xticklabels=labels,
-                yticklabels=labels,
+                xticklabels=fixed_labels,
+                yticklabels=fixed_labels,
                 annot_kws={"size": 10},
                 vmin=0,
                 vmax=100
@@ -240,7 +245,7 @@ def metrics_and_plots(model, X_test, y_test, model_name, target):
             labels = [re.sub(section_pattern, "", str(label)).strip() for label in labels]
         return labels
 
-    labels = fix_label(labels, target)
+    fixed_labels = fix_label(labels, target)
 
     # Generate the metric according to the predictions
     accuracy = accuracy_score(y_test, y_pred)
@@ -249,10 +254,10 @@ def metrics_and_plots(model, X_test, y_test, model_name, target):
 
     # Plot the confusion matrix and roc auc curve for Multi-class problem
     if target == 'Class':
-        plot_confusion_matrix(y_test, y_pred, target, model_name, labels)
+        plot_confusion_matrix(y_test, y_pred, target, model_name, fixed_labels)
         roc_auc = plot_roc_auc_curve(y_test, model, X_test, target, model_name)
     else:
-        plot_confusion_matrix(y_test, y_pred, target, model_name, labels, figsize=(31,25))
+        plot_confusion_matrix(y_test, y_pred, target, model_name, fixed_labels, figsize=(31,25))
         roc_auc = plot_roc_auc_curve(y_test, model, X_test, target, model_name)
 
     return accuracy, precision, f1, roc_auc
