@@ -27,7 +27,7 @@ class Gemma_2B_Embeddings(BaseEstimator, TransformerMixin):
             device_map='auto',
             torch_dtype=torch.bfloat16, 
         )
-        
+
         self.model.eval()
 
     def set_seed(self):
@@ -106,7 +106,7 @@ class SaveEmbeddings(BaseEstimator, TransformerMixin):
             index.add(X.values.astype('float32'))
             faiss.write_index(index, self.path)
             
-            print("Embeddings was saved successfully in the vector db.")
+            print("Embeddings was saved successfully in the vector db.\n")
             
             return self.path
         except Exception as e:

@@ -39,9 +39,9 @@ from data_processing.data_handling import split_data, encode_y_data
 # Define models
 models = {
     'SGDClassifier': SGDClassifier,
-    # 'SupportVectorClassifier': SVC,
-    # 'DecisionTreeClassifier': DecisionTreeClassifier,
-    # 'RandomForestClassifier': RandomForestClassifier,
+    'SupportVectorClassifier': SVC,
+    'DecisionTreeClassifier': DecisionTreeClassifier,
+    'RandomForestClassifier': RandomForestClassifier,
     'XGBClassifier': XGBClassifier,
     'LGBMClassifier': LGBMClassifier,
 }
@@ -109,24 +109,20 @@ def set_args():
     parser.add_argument('target', choices=['Class', 'Section'], help="Specify the target type: 'Class' or 'Section'.")
     return parser.parse_args().target
 
-def get_data(target, encode=False):
+def get_labels(target, encode=False):
     # Load labels
     df = load_dataset()
     X, y = separate_data(df, target)
-    
-    # Load train and test embeddings
-    X_train = load_embeddings('train')
-    X_test = load_embeddings('test')
-    
+
     # Encode labels if needed
     if encode:
         y = encode_y_data(y)
-    
+
     # Split the label the same way embeddings have been splited
     _, _, y_train, y_test = split_data(X, y)
     y_train, y_test = y_train.values.ravel(), y_test.values.ravel()
 
-    return X_train, X_test, y_train, y_test
+    return y_train, y_test
 
 def objective(trial, model_name, X_train, y_train, X_test, y_test):
     # Exctract model Class and Hyperparameters
@@ -296,15 +292,19 @@ if __name__ == '__main__':
     target = set_args()
 
     # Set the url and the experiment name for mlflow
-    mlflow.set_experiment("Roget_Classification")
     mlflow.set_tracking_uri("http://127.0.0.1:5000")
+    # mlflow.set_tracking_uri("http://127.0.0.1:5001") # Use this if you want to store the logs in a mysql database
+    mlflow.set_experiment("Roget_Classification")
+
+    # Load embeddings
+    X_train, X_test = load_embeddings()
 
     for model_name in models.keys():
-        # Get the data (Train + test, embeddings and labels)
+        # Get the data (Train + test labels)
         if model_name in ['XGBClassifier']:
-            X_train, X_test, y_train, y_test = get_data(target, encode=True)
+            y_train, y_test = get_labels(target, encode=True)
         else:
-            X_train, X_test, y_train, y_test = get_data(target)
+            y_train, y_test = get_labels(target)
 
         # Train and evaluate a non optimized model
         print(f'Non optimized {model_name}...')
