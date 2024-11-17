@@ -6,26 +6,5 @@ build_dependencies:
   - wheel==0.37.1
 
 dependencies:
-  - mlflow==2.17.2
-  - cffi==1.17.1
-  - cloudpickle==3.0.0
-  - dask-expr==1.1.15
-  - defusedxml==0.7.1
-  - graphviz==0.20.3
-  - jinja2==3.1.4
-  - lightgbm==4.5.0
-  - matplotlib==3.9.2
-  - numpy==1.26.4
-  - pandas==2.2.3
-  - psutil==6.0.0
-  - pyarrow==17.0.0
-  - scikit-learn==1.5.2
-  - scipy==1.13.1
-  - xxhash==3.5.0
-  - optuna==4.0.0
-  - pytest==8.3.3
-  - joblib==1.4.2
-  - faiss-cpu==1.9.0
-  - virtualenv==20.27.1
-  - xgboost==2.1.2
-  - seaborn==0.13.2
+  - pip:
+    - -r requirements.txt
