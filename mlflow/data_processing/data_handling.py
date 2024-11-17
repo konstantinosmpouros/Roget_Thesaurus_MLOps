@@ -4,7 +4,8 @@ from pathlib import Path
 
 PACKAGE_ROOT = Path(os.path.abspath(os.path.dirname(__file__))).parent
 sys.path.append(str(PACKAGE_ROOT))
-from data_processing.embeddings_generation import generate
+
+from data_processing.preprocessing import CustomPipeline
 
 import numpy as np
 import pandas as pd
@@ -33,6 +34,19 @@ def encode_y_data(y):
     encoder = LabelEncoder()
     return pd.DataFrame(encoder.fit_transform(y.values.ravel()))
 
+def generate_embeddings():
+    data = load_dataset()
+    X, y = separate_data(data, 'Class')
+    X_train, X_test, y_train, _ = split_data(X, y)
+    
+    print('Generateing the training embeddings!')
+    pipeline = CustomPipeline()
+    pipeline.pipeline.fit(X_train, y_train)
+
+    print('Generateing the test embeddings!')
+    pipeline.pipeline['SaveEmbeddings'].change_to_test()
+    pipeline.pipeline.transform(X_test)
+
 def load_embeddings():
     train_path = os.path.join(PACKAGE_ROOT, 'datasets/Train_word_embeddings.faiss')
     test_path = os.path.join(PACKAGE_ROOT, 'datasets/Test_word_embeddings.faiss')
@@ -60,5 +74,5 @@ def load_embeddings():
 
     else:
         print(f'The embeddigns doesnt exist!!')
-        generate()
+        generate_embeddings()
         return load_embeddings()
