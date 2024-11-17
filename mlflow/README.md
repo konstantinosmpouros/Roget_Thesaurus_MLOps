@@ -9,9 +9,9 @@ This mlflow project is dedicated in the optimazation of the machine learning mod
 
 ## Run the mlflow project
 
-To run the mlflow project you can use the run_project.sh script. The requirements to run generate the embeddings and the mlflow project are in the requirement file. The mlflow will automatically create a python virtual enviroment to run the project inside it, please be sure that you have installed in you os the pyenv cause is need from the mlflow to create the python virtual enviroment.
+To run the mlflow project you can use the run_project.sh script. The requirements to run generate the embeddings and the mlflow project are in the requirement file and in the python_env yaml file. The mlflow will automatically create a python virtual enviroment to run the project inside it, please be sure that you have installed in your os the pyenv cause is need from the mlflow to create the python virtual enviroment. First of all run in a separate CLI the mlflow server (mlflow ui) and then to run the project use these commands:
 
-To run the project use these command for the Class and the Section:
+To run the project locally use these command for the Class and the Section:
 
 ```bash
 mlflow run . --experiment-name Roget_Classification
@@ -19,6 +19,16 @@ mlflow run . --experiment-name Roget_Classification
 
 ```bash
 mlflow run . --experiment-name Roget_Classification -P target=Section
+```
+
+To run remote from Github the Mlflow project run these commands for the Class and the Section experiments.
+
+```bash
+mlflow run https://github.com/konstantinosmpouros/Roget_Thesaurus_MLOps.git#mlflow --experiment-name Roget_Classification
+```
+
+```bash
+mlflow run https://github.com/konstantinosmpouros/Roget_Thesaurus_MLOps.git#mlflow --experiment-name Roget_Classification -P target=Section
 ```
 
 To run a local server with one of the trained models as a rest api use this command and replace the tag with the models id from the mlflow ui and the port tag with the port you want. I used the 9000:
