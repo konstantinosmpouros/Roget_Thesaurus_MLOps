@@ -13,7 +13,9 @@ The pipeline consists of the following key stages:
 
 3. **Dimensionality Reduction**: We apply UMAP dimensionality reduction techniques to reduce the complexity of the embeddings.
 
-4. **Classification**: An LightGBM classifier is trained to predict the semantic category (or section) for each word, based on the processed embeddings.
+4. **Standard Scaling**: The embeddings are standardized again after the dimensionality reduction to ensure that the features have a mean of 0 and a standard deviation of 1, helping improve the performance of the classification models.
+
+5. **Classification**: An LightGBM classifier is trained to predict the semantic category (or section) for each word, based on the processed embeddings.
 
 ## TestPyPI Project and Installation
 

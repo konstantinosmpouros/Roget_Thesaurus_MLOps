@@ -120,8 +120,9 @@ class CustomPipeline():
     def __init__(self):
         self.pipeline = Pipeline([
                     ('Gemma_2B_Embeddings', Gemma_2B_Embeddings()),
-                    ('StandarScaling', StandardScaling()),
+                    ('StandarScaling_1', StandardScaling()),
                     ('DimensionalityReduction', DimensionalityReduction()),
+                    ('StandarScaling_2', StandardScaling()),
                     ('SaveEmbeddings', SaveEmbeddings())
         ])
 

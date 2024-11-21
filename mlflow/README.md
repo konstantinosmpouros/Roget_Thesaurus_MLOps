@@ -9,7 +9,7 @@ This mlflow project is dedicated in the optimazation of the machine learning mod
 
 ## Run the mlflow project
 
-To run the mlflow project you can use the run_project.sh script. The requirements to run generate the embeddings and the mlflow project are in the requirement file and in the python_env yaml file. The mlflow will automatically create a python virtual enviroment to run the project inside it, please be sure that you have installed in your os the pyenv cause is need from the mlflow to create the python virtual enviroment. First of all run in a separate CLI the mlflow server (mlflow ui) and then to run the project use these commands:
+To run the mlflow project you can use the run_project.sh script. The requirements to run generate the embeddings and the mlflow project are in the requirement file and in the python_env yaml file. The mlflow will automatically create a python virtual enviroment to run the project inside it, please be sure that you have installed in your os the pyenv cause is need from the mlflow to create the python virtual enviroment. Before running anything make sure you have runned in a separate CLI the mlflow server (mlflow ui) and then to run the project use these commands:
 
 To run the project locally use these command for the Class and the Section:
 

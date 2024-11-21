@@ -298,6 +298,8 @@ if __name__ == '__main__':
 
     # Load embeddings
     X_train, X_test = load_embeddings()
+    
+    print(f'\nStarting the {target} project!!\n')
 
     for model_name in models.keys():
         # Get the data (Train + test labels)
