@@ -1,12 +1,9 @@
-.ipynb_checkpoints/*
-dist/*
-pypi_env/*
-
+test_pypi/dist/*
+test_pypi/pypi_env/*
 test_pypi/prediction_model/trained_models/class/class_pipeline.joblib
 test_pypi/prediction_model/trained_models/section/section_pipeline.joblib
 
 mlflow/datasets/Test_word_embeddings.faiss
 mlflow/datasets/Train_word_embeddings.faiss
 mlflow/mlruns/*
-mlflow/TODO.txt
 mlflow/mlflow_env/*
