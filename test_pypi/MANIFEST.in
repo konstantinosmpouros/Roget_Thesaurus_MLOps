@@ -2,7 +2,6 @@ include setup.py
 include requirements.txt
 include README.md
 include prediction_model/VERSION
-include images/*
 
 # Include all CSV files in the datasets directory
 recursive-include prediction_model/datasets *.csv
@@ -26,7 +25,6 @@ recursive-exclude prediction_model/trained_models *.joblib
 prune myenv
 prune dist
 prune *.egg-info
-prune mlflow
 prune test
 
 # Exclude cache files and unnecessary directories

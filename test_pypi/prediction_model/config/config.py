@@ -7,8 +7,8 @@ PACKAGE_ROOT = pathlib.Path(prediction_model.__file__).resolve().parent
 # Dataset Variables
 DATAPATH = os.path.join(PACKAGE_ROOT,"datasets")
 FILE_NAME = "Roget's_Words.csv"
-CLASS_TEST_FILE = "Class_test.csv"
-SECTION_TEST_FILE = "Section_test.csv"
+CLASS_TEST_FILE = "CLASS_TEST.csv"
+SECTION_TEST_FILE = "SECTION_TEST.csv"
 TARGET_CLASS = 'Class'
 TARGET_SECTION = 'Section'
 

@@ -28,20 +28,35 @@ class CustomPipeline():
         # Define the pipeline (A sequence of transformations and the classifier)
         self.pipeline = Pipeline([
                     ('Gemma_2B_Embeddings', pp.Gemma_2B_Embeddings()),
-                    ('StandarScaling', pp.StandardScaling()),
+                    ('StandarScaling_1', pp.StandardScaling()),
                     ('DimensionalityReduction', pp.DimensionalityReduction()),
-                    ('LGBMClassifier', pp.LGBM())
+                    ('StandarScaling_2', pp.StandardScaling()),
+                    ('LGBMClassifier', pp.LGBM()),
         ])
 
     # Save the pipeline object to a file using joblib
     def save_pipeline(self):
-        joblib.dump(self.pipeline, self.save_path)
-        print('Model has been saved successfully!!')
-        print('Path:', self.save_path)
+        if not os.path.exists(self.save_path):
+            joblib.dump(self.pipeline, self.save_path)
+            print('Model has been saved successfully!!')
+        else:
+            joblib.dump(self.pipeline, self.save_path)
+            print('Existing model has been replace with the new one successfully!!')
 
     # Load the pipeline from the file
     def load_pipeline(self):
-        self.pipeline = joblib.load(self.save_path)
-        print(f"Model has been loaded")
-        return self
+        if os.path.exists(self.save_path):
+            self.pipeline = joblib.load(self.save_path)
+            print(f"Model has been loaded")
+            return self
+        else:
+            print(f'No saved pipeline found. Running {self.target} training.')
+            if self.target == 'Class':
+                training_class_pipeline = __import__('prediction_model.training_class_pipeline')
+            else:
+                training_section_pipeline = __import__('prediction_model.training_section_pipeline')
+
+            self.pipeline = joblib.load(self.save_path)
+            print(f"Model has been loaded")
+            return self
 

@@ -17,7 +17,7 @@ def load_dataset(file_name):
 
 # Separate X and y according to prediction target
 def separate_data(data, target):
-    X = data[['Final_Words']]
+    X = data[['Word']]
     y = data[[target]]
     return X, y
 
