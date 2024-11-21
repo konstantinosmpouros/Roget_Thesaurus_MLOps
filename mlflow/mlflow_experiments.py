@@ -313,8 +313,9 @@ if __name__ == '__main__':
 
         model = models[model_name](random_state=33)
         model.fit(X_train, y_train)
-
-        print(f'Non optimized {model_name} accuracy: {model.score(X_test, y_test)}\n')
+        
+        score_1 = model.score(X_test, y_test)
+        print(f'Non optimized {model_name} accuracy: {score_1}\n')
 
         # Train an optuna optimized model
         print(f"Optimizing {model_name}...")
@@ -323,9 +324,10 @@ if __name__ == '__main__':
                                       y_train,
                                       X_test,
                                       y_test)
-        print(f'Best optuna optimized {model_name} accuracy: {best_trial.score(X_test, y_test)}')
+        score_2 = best_trial.score(X_test, y_test)
+        print(f'Best optuna optimized {model_name} accuracy: {score_2}')
 
         # Save parameters, model and tags for this model
-        print(f'Logging best optuna {model_name} model and parameters')
+        print(f'Logging best {model_name} model and parameters')
         mlflow_logging(best_trial, model_name, target)
         print('Model and parameters successfully saved!!\n\n')

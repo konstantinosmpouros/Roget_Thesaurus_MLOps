@@ -11,7 +11,8 @@ st.write("Enter a word to get its class and section.")
 # Input form
 word = st.text_input("Word:")
 
-if st.button("Submit"):
+# Predict button
+if st.button("Predict"):
     if word.strip():
         try:
             # Send the word to the model server

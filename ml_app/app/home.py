@@ -13,14 +13,14 @@ def load_image_base64(image_path):
     return f"data:image/png;base64,{encoded}"
 
 # Load the local icon
-icon_base64 = load_image_base64("materials/ai_icon.png")
+icon_base64 = load_image_base64("materials/ai_icon_gemma.png")
 
 # Title with local AI icon
 st.markdown(
     f"""
-    <h1 style="display: inline; font-size: 3em; margin-bottom: 40px;">
+    <h1 style="display: inline; font-size: 3em; margin-bottom: 20px;">
         Welcome to the Roget's Word Classifier App! 
-        <img src="{icon_base64}" alt="AI Icon" style="width: 2em; height: auto; margin-left: -15px; vertical-align: left;">
+        <img src="{icon_base64}" alt="AI Icon" style="width: 1.8em; height: auto; margin-left: 0px; vertical-align: left;">
     </h1>
     """,
     unsafe_allow_html=True,
