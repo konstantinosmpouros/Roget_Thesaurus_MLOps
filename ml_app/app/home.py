@@ -1,36 +1,41 @@
 import streamlit as st
+import base64
+from pathlib import Path
 
 # Set page title and icon
-st.set_page_config(page_title="Word Classifier", page_icon=":material/home:")
+st.set_page_config(page_title="Roget's Word Classifier", page_icon=":material/home:")
 
-# Title
-st.title("Welcome to the Word Classifier App! 📚")
+# Encode the local image in base64
+def load_image_base64(image_path):
+    img_path = Path(image_path)
+    with open(img_path, "rb") as img_file:
+        encoded = base64.b64encode(img_file.read()).decode()
+    return f"data:image/png;base64,{encoded}"
 
-# Project Overview
-st.write(
-    """
-    This is a machine learning application designed to classify words based on their **class** and **section** 
-    from Roget's Thesaurus. This project is part of an MLOps pipeline that enables easy prediction of word classifications.
+# Load the local icon
+icon_base64 = load_image_base64("materials/ai_icon.png")
 
-    **👈 Select the prediction from the sidebar** to interact with the model or to learn more about the application.
-
-    ### Key Features
-    - **Word Classification**: Predicts the class and section of a given word.
-    - **MLOps Pipeline**: Model served using FastAPI and tracked with MLflow for optimal performance.
-    - **Dockerized App**: Fully containerized for easy deployment and scalability.
-
-    ### Want to learn more about the project?
-    - Explore the [GitHub repository](https://github.com/konstantinosmpouros/Roget_Thesaurus_MLOps) to see the complete code and model training pipeline.
-    - Learn about the [MLOps pipeline](https://docs.your-mlops-docs) that tracks models and ensures efficient deployment.
-
-    ### Explore the ML Model
-    The app uses a pre-trained machine learning model to classify words and predict their classes and sections from **Roget's Thesaurus**.
-    The model is served through a FastAPI server, and you can interact with it through the **Predictions** page.
-
-    ### See the Pipeline in Action
-    This app is designed to be used with Docker for easy deployment and scaling. You can run it on your local machine or in a cloud environment.
-    """
+# Title with local AI icon
+st.markdown(
+    f"""
+    <h1 style="display: inline; font-size: 3em; margin-bottom: 40px;">
+        Welcome to the Roget's Word Classifier App! 
+        <img src="{icon_base64}" alt="AI Icon" style="width: 2em; height: auto; margin-left: -15px; vertical-align: left;">
+    </h1>
+    """,
+    unsafe_allow_html=True,
 )
 
-# Optional: Add links or other content related to your project
-st.write("Developed by [konstantinos Mpouros](https://github.com/konstantinosmpouros) as part of an MLOps learning project.")
+# Additional spacing between the title and the text
+st.markdown("<div style='margin-bottom: 20px;'></div>", unsafe_allow_html=True)
+
+# Intro to the Concept of the Project
+st.write(
+    """
+    This application is designed to classify words from **Roget's Thesaurus** into their respective **class** and **section**. 
+    It leverages an MLOps pipeline to ensure a streamlined process for prediction, tracking, and deployment.
+    
+    The project focuses on automating the classification process, allowing users to input any word, and receive its predicted 
+    class and section. This is powered by a pre-trained machine learning model that has been optimized and deployed using modern MLOps tools.
+    """
+)
