@@ -2,8 +2,8 @@
 dist/*
 pypi_env/*
 
-prediction_model/trained_models/class/class_pipeline.joblib
-prediction_model/trained_models/section/section_pipeline.joblib
+test_pypi/prediction_model/trained_models/class/class_pipeline.joblib
+test_pypi/prediction_model/trained_models/section/section_pipeline.joblib
 
 mlflow/datasets/Test_word_embeddings.faiss
 mlflow/datasets/Train_word_embeddings.faiss
