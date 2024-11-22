@@ -160,7 +160,7 @@ def run_optuna_study(model_name, X_train, y_train, X_test, y_test, n_trials=20):
     
     return best_model
 
-def plot_confusion_matrix(y_test, y_pred, target, model_name, fixed_labels, figsize=(15, 9)):
+def plot_confusion_matrix(y_test, y_pred, target, model_name, figsize=(15, 9)):
     # Generate the confusion matrix plot
     plt.figure(figsize=figsize)
 
@@ -173,13 +173,16 @@ def plot_confusion_matrix(y_test, y_pred, target, model_name, fixed_labels, figs
     # Format the text for display
     cm_percentage_text = np.array([["{:.2f}%".format(value) for value in row] for row in cm_percentage])
 
+    # The labels for the plots
+    labels = np.unique(y_test)
+
     # Plot the heatmap
     sns.heatmap(cm_percentage,
                 annot=cm_percentage_text,
                 fmt="",
                 cmap="Blues",
-                xticklabels=fixed_labels,
-                yticklabels=fixed_labels,
+                xticklabels=labels,
+                yticklabels=labels,
                 annot_kws={"size": 10},
                 vmin=0,
                 vmax=100
@@ -228,21 +231,6 @@ def metrics_and_plots(model, X_test, y_test, model_name, target):
     # Make the predictions
     y_pred = model.predict(X_test)
 
-    # Format-fix the labels for the plots
-    labels = np.unique(y_test)
-
-    def fix_label(labels, target):
-        # Remove the Class/Section and the latin number for every category
-        if target == 'Class':
-            class_pattern = r"(CLASS\s+[IVXLCDM]+)"
-            labels = [re.sub(class_pattern, "", str(label)).strip() for label in labels]
-        elif target == 'Section':
-            section_pattern = r"(SECTION\s+[IVXLCDM]+\.)"
-            labels = [re.sub(section_pattern, "", str(label)).strip() for label in labels]
-        return labels
-
-    fixed_labels = fix_label(labels, target)
-
     # Generate the metric according to the predictions
     accuracy = accuracy_score(y_test, y_pred)
     f1 = f1_score(y_test, y_pred, average='weighted')
@@ -250,11 +238,11 @@ def metrics_and_plots(model, X_test, y_test, model_name, target):
 
     # Plot the confusion matrix and roc auc curve for Multi-class problem
     if target == 'Class':
-        plot_confusion_matrix(y_test, y_pred, target, model_name, fixed_labels)
-        roc_auc = plot_roc_auc_curve(y_test, model, X_test, target, model_name)
+        plot_confusion_matrix(y_test, y_pred, target, model_name)
     else:
-        plot_confusion_matrix(y_test, y_pred, target, model_name, fixed_labels, figsize=(31,25))
-        roc_auc = plot_roc_auc_curve(y_test, model, X_test, target, model_name)
+        plot_confusion_matrix(y_test, y_pred, target, model_name, figsize=(31,25))
+
+    roc_auc = plot_roc_auc_curve(y_test, model, X_test, target, model_name)
 
     return accuracy, precision, f1, roc_auc
 

@@ -22,16 +22,16 @@ def load_test_embeddings_sample():
     embeddings_sample = pd.DataFrame(embeddings).iloc[:2, :]
     return embeddings_sample
 
-def load_y_labels(target):
+def load_y_labels_sample(target):
     path = os.path.join(PACKAGE_ROOT, f'datasets/{target}_TEST.csv')
-    return pd.read_csv(path)
+    return pd.read_csv(path).iloc[:2, 2].to_list()
 
-# Load test embeddings
+# Load a sample of the test embeddings 
 embeddings_sample = load_test_embeddings_sample()
 
-# Load true labels
-class_labels = load_y_labels('CLASS')
-section_labels = load_y_labels('SECTION')
+# Load a sample of the true labels
+class_labels = load_y_labels_sample('CLASS')
+section_labels = load_y_labels_sample('SECTION')
 
 # Models uri
 class_model_uri = 'runs:/a5ea513ef1b348f6ae209c85d8c0e7db/LGBMClassifier' # The uris will be different if you run the project
@@ -43,7 +43,7 @@ section_model = mlflow.pyfunc.load_model(section_model_uri)
 
 # Make the predictions
 print('The Class predictions are: ', class_model.predict(embeddings_sample))
-print('The Class true labels are: ', class_labels.iloc[:2, 2].to_list())
+print('The Class true labels are: ', class_labels)
 print()
 print('The Class predictions are: ', section_model.predict(embeddings_sample))
-print('The Class true labels are: ', section_labels.iloc[:2, 2].to_list())
+print('The Class true labels are: ', section_labels)

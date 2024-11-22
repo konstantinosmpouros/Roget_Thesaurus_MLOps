@@ -52,7 +52,7 @@ def data_presentation():
 
     try:
         words, embeddings_2d, embeddings_3d = get_data()
-        
+
         # Groupby Class
         class_word_counts = words.groupby('Class')['Word'].count().reset_index()
         class_word_counts.rename(columns={'Word': 'No. Words'}, inplace=True)
@@ -81,7 +81,8 @@ def data_presentation():
             x=alt.X("X", scale=alt.Scale(zero=False)),
             y=alt.Y("Y", scale=alt.Scale(zero=False)),
             color=alt.Color(hue_option, legend=alt.Legend(title=hue_option)),
-            tooltip=["Word"]
+            tooltip=["Word"],
+            opacity=alt.value(0.4)
         ).properties(
             width=600,
             height=400,
