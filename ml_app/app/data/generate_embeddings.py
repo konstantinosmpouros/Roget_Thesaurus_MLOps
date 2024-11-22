@@ -129,7 +129,7 @@ n_components = args.n_components
 
 # Load data
 data = pd.read_csv("Roget's_Words.csv", encoding='latin')
-words = data.loc[:, ['Word']].astype(str)
+words = data.loc[:, ['Final_Words']].astype(str)
 
 # Set up the pipeline and generate the embeddings
 custom_pipeline = CustomPipeline(n_components)
