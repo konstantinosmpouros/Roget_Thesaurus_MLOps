@@ -17,11 +17,15 @@ import faiss
 def load_dataset(filename="Roget's_Words"):
     filepath = os.path.join(PACKAGE_ROOT, f"datasets/{filename}.csv")
     data = pd.read_csv(filepath, encoding='latin')
+
+    # Cleaning
+    data['Section'] = data['Section'].str.replace(r'^SECTION\s+\w+\.\s*', '', regex=True).str.strip()
+    data['Class'] = data['Class'].str.replace(r'^CLASS\s+\w+\s+', '', regex=True).str.strip()
     return data
 
 # Separate X and y according to prediction target
 def separate_data(data, target):
-    X = data[['Word']].astype(str)
+    X = data[['Final_Words']].astype(str)
     y = data[[target]]
     return X, y
 
