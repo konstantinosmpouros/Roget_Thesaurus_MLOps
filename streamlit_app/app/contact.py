@@ -21,8 +21,9 @@ st.write(
     ### Developer Information
     - **Name**: Konstantinos Mpouros
     - **Email**: kostasbouros@hotmail.gr
-    - [LinkedIn Profile](https://www.linkedin.com/in/konstantinos-mpouros-5b491219b/)
-    - [GitHub Repository](https://github.com/konstantinosmpouros/Roget_Thesaurus_MLOps)
+    - **LinkedIn**: [Konstantinos Mpouros](https://www.linkedin.com/in/konstantinos-mpouros-5b491219b/)
+    - **GitHub**: [konstantinosmpouros](https://github.com/konstantinosmpouros/)
+    - **Project Repository**: [Roget_Thesaurus_MLOps](https://github.com/konstantinosmpouros/Roget_Thesaurus_MLOps)
     """
 )
 
