@@ -8,7 +8,7 @@ from sklearn.pipeline import Pipeline
 PACKAGE_ROOT = Path(os.path.abspath(os.path.dirname(__file__))).parent
 sys.path.append(str(PACKAGE_ROOT))
 
-import prediction_model.processing.preprocessing as pp 
+from prediction_model.processing.preprocessing import Gemma_2B_Embeddings, StandardScaling, DimensionalityReduction, LGBM
 from prediction_model.config import config
 
 
@@ -27,11 +27,11 @@ class CustomPipeline():
     def create_pipeline(self):
         # Define the pipeline (A sequence of transformations and the classifier)
         self.pipeline = Pipeline([
-                    ('Gemma_2B_Embeddings', pp.Gemma_2B_Embeddings()),
-                    ('StandarScaling_1', pp.StandardScaling()),
-                    ('DimensionalityReduction', pp.DimensionalityReduction()),
-                    ('StandarScaling_2', pp.StandardScaling()),
-                    ('LGBMClassifier', pp.LGBM()),
+                    ('Gemma_2B_Embeddings', Gemma_2B_Embeddings()),
+                    ('StandarScaling_1', StandardScaling()),
+                    ('DimensionalityReduction', DimensionalityReduction()),
+                    ('StandarScaling_2', StandardScaling()),
+                    ('LGBMClassifier', LGBM()),
         ])
 
     # Save the pipeline object to a file using joblib

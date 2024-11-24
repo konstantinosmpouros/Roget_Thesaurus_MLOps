@@ -26,17 +26,21 @@ class Gemma_2B_Embeddings(BaseEstimator, TransformerMixin):
         # Set the model name for Gemma 1.1 2B model
         self.model_name = "google/gemma-1.1-2b-it"
 
+    def load_model(self):
         # Load the tokenizer corresponding to the model
-        self.tokenizer = AutoTokenizer.from_pretrained(self.model_name)
+        tokenizer = AutoTokenizer.from_pretrained(self.model_name)
         # Load the pre-trained model
-        self.model = AutoModelForCausalLM.from_pretrained(
+        model = AutoModelForCausalLM.from_pretrained(
             self.model_name,
             device_map='auto',
             torch_dtype=torch.bfloat16, 
         )
 
         # Set the model to evaluation mode
-        self.model.eval()
+        model.eval()
+
+        # Return model and tokenizer
+        return model, tokenizer
 
     # Method to set the random seed for reproducibility across runs
     def set_seed(self):
@@ -50,6 +54,9 @@ class Gemma_2B_Embeddings(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, X, batch_size=100):
+        # Load model
+        model, tokenizer = self.load_model()
+        
         # Set the seed for reproducibility
         self.set_seed()
         embeddings = [] # List to store the embeddings
@@ -60,7 +67,7 @@ class Gemma_2B_Embeddings(BaseEstimator, TransformerMixin):
             batch = X.iloc[start:start + batch_size, 0].tolist() 
 
             # Tokenize the batch of text
-            batch_tokenized  = self.tokenizer(batch,
+            batch_tokenized  = tokenizer(batch,
                                          truncation=True,
                                          padding='max_length',
                                          max_length=20,
@@ -68,7 +75,7 @@ class Gemma_2B_Embeddings(BaseEstimator, TransformerMixin):
 
             # Perform inference without updating gradients
             with torch.no_grad():
-                outputs = self.model(**batch_tokenized, output_hidden_states=True)
+                outputs = model(**batch_tokenized, output_hidden_states=True)
 
             # Extract the last hidden states from the model output
             last_hidden_states = outputs.hidden_states[-1]
