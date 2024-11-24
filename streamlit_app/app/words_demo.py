@@ -1,62 +1,34 @@
 import streamlit as st
 import os
 from pathlib import Path
+import requests
 import pandas as pd
 import numpy as np
 import faiss
 import plotly.express as px
 
-dir_path = Path(__file__).parent
 
-# Set page title and icon
-st.set_page_config(page_title="Roget's Word Demo", page_icon=":material/table:")
-
-# Title
-st.title("Roget's Word Demo")
-
-# Info
-st.write("This demo illustrates information about the words and the embeddings used to train the pipeline!!")
+FASTAPI_URL = "http://127.0.0.1:8081"
 
 def data_presentation():
     def get_words():
-        # Load words
-        words_path = os.path.join(dir_path, "data/Roget's_Words.csv")
-        words = pd.read_csv(words_path, encoding='latin').loc[:, ['Class', 'Section', 'Sub-Category', 'Word']]
-        words['Word'] = words['Word'].astype(str)
-        
-        # Remove "SECTION <RomanNumeral>. " prefix and "CLASS I " part.
-        words['Section'] = words['Section'].str.replace(r'^SECTION\s+\w+\.\s*', '', regex=True).str.strip()
-        words['Class'] = words['Class'].str.replace(r'^CLASS\s+\w+\s+', '', regex=True).str.strip()
-        return words
+        return pd.DataFrame(requests.get(f"{FASTAPI_URL}/get_words").json())
 
-    def get_embeddings(n):
-        # Load embeddings
-        embeddings_path = os.path.join(dir_path, f"data/embeddings_{n}d.faiss")
-        index = faiss.read_index(embeddings_path)
-        d = index.d
-        embeddings = np.zeros((index.ntotal, d), dtype=np.float32)
-
-        for i in range(index.ntotal):
-            embeddings[i] = index.reconstruct(i)
-        
-        if n == 2:
-            embeddings = pd.DataFrame(embeddings, columns=["X", "Y"])
-        elif n == 3:
-            embeddings = pd.DataFrame(embeddings, columns=["X", "Y", "Z"])
-        
-        return embeddings
+    def get_embeddings(dimensions):
+        return pd.DataFrame(requests.post(f"{FASTAPI_URL}/get_embeddings", json={"dimensions": int(dimensions)}).json())
 
     try:
-        words, embeddings_2d, embeddings_3d = get_words(), get_embeddings(2), get_embeddings(3)
-
         # Search bar
-        st.header("Search Words")
+        st.header("Words Info")
         search_query = st.text_input("Enter a word to search:")
+
+        # Get the words to search on them
+        words = get_words()
 
         if search_query:  # Perform search only if query is not empty
             # Filter the dataframe
             filtered_df = words[words['Word'].str.contains(search_query, case=False, na=False)]
-            
+
             if not filtered_df.empty:
                 # Display results in an expander/dropdown
                 with st.expander(f"Search Results ({len(filtered_df)} matches):", expanded=True):
@@ -82,13 +54,14 @@ def data_presentation():
                                 values=section_distribution.values, 
                                 names=section_distribution.index, 
                                 title="Section Distribution")
-        # Update hover template to customize appearance
         fig_section_pie.update_traces(
             hovertemplate="<span style='color: gray;'>Section </span> %{label}<br><span style='color: gray;'>No. Words </span> %{value}<extra></extra>",
         )
         fig_section_pie.update_layout(height=550)
         st.plotly_chart(fig_section_pie)
 
+        # Load embeddings
+        embeddings_2d, embeddings_3d = get_embeddings(2), get_embeddings(3)
 
         # Combine embeddings with metadata for coloring
         embeddings_2d = pd.concat([embeddings_2d, words[['Class', 'Section', 'Word']].reset_index(drop=True)], axis=1)
@@ -96,7 +69,7 @@ def data_presentation():
 
         # Embeddings plot header
         st.header("Embedding Plots")
-        
+
         # User selection for hue
         hue_option = st.selectbox("Hue by:", ["Class", "Section"])
         num_samples = st.slider(
@@ -179,5 +152,14 @@ def data_presentation():
 
     except Exception as e:
         st.error(f"Error: {e}")
+
+# Set page title and icon
+st.set_page_config(page_title="Roget's Word Demo", page_icon=":material/table:")
+
+# Title
+st.title("Roget's Word Demo")
+
+# Info
+st.write("This demo illustrates information about the words and the embeddings used to train the pipeline!!")
 
 data_presentation()
