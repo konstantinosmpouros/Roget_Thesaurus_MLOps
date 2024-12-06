@@ -50,13 +50,23 @@ def predict(word_details: WordPred):
 @app.get('/get_words')
 def get_words():
     words_path = os.path.join(PACKAGE_ROOT, "data/Roget's_Words.csv")
-    words = pd.read_csv(words_path, encoding='latin').loc[:, ['Class', 'Section', 'Sub-Category', 'Word', '']]
+    
+    # Load the CSV and clean column names
+    df = pd.read_csv(words_path, encoding='latin')
+    df.columns = df.columns.str.strip()  # Remove extra spaces
+    
+    # Select necessary columns (adjust as per actual CSV structure)
+    words = df.loc[:, ['Class', 'Section', 'Sub-Category', 'Word']]
     words['Word'] = words['Word'].astype(str)
-        
-    # Remove "SECTION <RomanNumeral>. " prefix and "CLASS I " part.
+
+    # Clean 'Section' and 'Class' columns
     words['Section'] = words['Section'].str.replace(r'^SECTION\s+\w+\.\s*', '', regex=True).str.strip()
     words['Class'] = words['Class'].str.replace(r'^CLASS\s+\w+\s+', '', regex=True).str.strip()
-    return words
+
+    # Convert to JSON-serializable format
+    words_dict = words.to_dict(orient='records')
+    
+    return {"words": words_dict}
 
 @app.post('/get_embeddings')
 def get_embeddings(embed_parser: Embeddings):

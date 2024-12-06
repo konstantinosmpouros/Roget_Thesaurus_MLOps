@@ -1,10 +1,6 @@
 import streamlit as st
-import os
-from pathlib import Path
 import requests
 import pandas as pd
-import numpy as np
-import faiss
 import plotly.express as px
 
 
@@ -12,7 +8,7 @@ FASTAPI_URL = "http://127.0.0.1:8081"
 
 def data_presentation():
     def get_words():
-        return pd.DataFrame(requests.get(f"{FASTAPI_URL}/get_words").json())
+        return pd.DataFrame(requests.get(f"{FASTAPI_URL}/get_words").json()['words'])
 
     def get_embeddings(dimensions):
         return pd.DataFrame(requests.post(f"{FASTAPI_URL}/get_embeddings", json={"dimensions": int(dimensions)}).json())
@@ -151,7 +147,7 @@ def data_presentation():
         st.plotly_chart(fig_3d, use_container_width=True)
 
     except Exception as e:
-        st.error(f"Error: {e}")
+        st.error(f"Error: {e.args}")
 
 # Set page title and icon
 st.set_page_config(page_title="Roget's Word Demo", page_icon=":material/table:")

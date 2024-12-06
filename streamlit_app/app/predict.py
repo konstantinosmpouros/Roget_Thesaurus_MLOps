@@ -1,5 +1,3 @@
-from pathlib import Path
-import os
 import pandas as pd
 import requests
 import streamlit as st
@@ -10,7 +8,7 @@ FASTAPI_URL = "http://127.0.0.1:8081"
 # Function to filter words for the searchbox
 def search_words(searchterm: str) -> list:
     # Load the dataset
-    words = pd.DataFrame(requests.get(f"{FASTAPI_URL}/get_words").json())
+    words = pd.DataFrame(requests.get(f"{FASTAPI_URL}/get_words").json()['words'])
     matches = words[words['Word'].str.contains(searchterm, case=False, na=False)]
     return matches['Word'].tolist() if not matches.empty else []
 

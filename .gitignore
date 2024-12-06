@@ -10,3 +10,7 @@ mlflow/mlflow_env/*
 
 streamlit_app/server/prediction_model/trained_models/section/section_pipeline.joblib
 streamlit_app/server/prediction_model/trained_models/class/class_pipeline.joblib
+streamlit_app/app_env/*
+streamlit_app/server_env/*
+
+roget-mlops.pem
