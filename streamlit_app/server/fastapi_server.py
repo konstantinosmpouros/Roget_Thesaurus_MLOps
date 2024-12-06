@@ -16,12 +16,16 @@ from prediction_model.config import config
 
 app = FastAPI()
 
-# Load pipelines
-class_pipeline = CustomPipeline(config.TARGET_CLASS)
-class_pipeline.load_pipeline()
+# Helper function to load and unload pipelines
+def load_pipeline(target):
+    """Loads a pipeline dynamically."""
+    pipeline = CustomPipeline(target)
+    pipeline.load_pipeline()
+    return pipeline
 
-section_pipeline = CustomPipeline(config.TARGET_SECTION)
-section_pipeline.load_pipeline()
+def unload_pipeline(pipeline):
+    """Unloads a pipeline to free memory."""
+    pipeline.pipeline = None  # Dereference the pipeline object
 
 # Perform word parsing
 class WordPred(BaseModel):
@@ -33,19 +37,32 @@ class Embeddings(BaseModel):
 
 @app.post('/predict')
 def predict(word_details: WordPred):
-    # Parse the word and pass it into a dataframe
-    df = pd.DataFrame({'Word': [word_details.model_dump()['word']]})
+    try:
+        # Parse the word and pass it into a dataframe
+        df = pd.DataFrame({'Word': [word_details.model_dump()['word']]})
 
-    # Make the predictions
-    class_pred = class_pipeline.pipeline.predict(df)
-    section_pred = section_pipeline.pipeline.predict(df)
+        # Load pipeline, make prediction and unload right after
+        class_pipeline = load_pipeline(config.TARGET_CLASS)
+        class_pred = class_pipeline.pipeline.predict(df)
+        unload_pipeline(class_pipeline)
 
-    # Return the predictions in a dictionary
-    predictions = {
-        'class': class_pred,
-        'section': section_pred
-    }
-    return predictions
+        # Make the predictions
+        section_pipeline = load_pipeline(config.TARGET_SECTION)
+        section_pred = section_pipeline.pipeline.predict(df)
+        unload_pipeline(section_pipeline)
+
+        # Return the predictions in a dictionary
+        predictions = {
+            'class': class_pred,
+            'section': section_pred
+        }
+        return predictions
+
+    finally:
+        # Unload pipelines after prediction
+        unload_pipeline(class_pipeline)
+        unload_pipeline(section_pipeline)
+
 
 @app.get('/get_words')
 def get_words():

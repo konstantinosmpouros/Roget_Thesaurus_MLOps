@@ -6,17 +6,19 @@ import plotly.express as px
 
 FASTAPI_URL = "http://127.0.0.1:8081"
 
+@st.cache_data
+def get_words():
+    return pd.DataFrame(requests.get(f"{FASTAPI_URL}/get_words").json()['words'])
+
+@st.cache_data
+def get_embeddings(dimensions):
+    return pd.DataFrame(requests.post(f"{FASTAPI_URL}/get_embeddings", json={"dimensions": int(dimensions)}).json())
+
 def data_presentation():
-    def get_words():
-        return pd.DataFrame(requests.get(f"{FASTAPI_URL}/get_words").json()['words'])
-
-    def get_embeddings(dimensions):
-        return pd.DataFrame(requests.post(f"{FASTAPI_URL}/get_embeddings", json={"dimensions": int(dimensions)}).json())
-
     try:
         # Search bar
         st.header("Words Info")
-        search_query = st.text_input("Enter a word to search:")
+        search_query = st.text_input("Enter a word to search:").strip()
 
         # Get the words to search on them
         words = get_words()

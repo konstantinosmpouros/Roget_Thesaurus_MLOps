@@ -5,10 +5,14 @@ from streamlit_searchbox import st_searchbox
 
 FASTAPI_URL = "http://127.0.0.1:8081"
 
+def get_words():
+    # Fetches words from the API
+    return pd.DataFrame(requests.get(f"{FASTAPI_URL}/get_words").json()['words'])
+
 # Function to filter words for the searchbox
 def search_words(searchterm: str) -> list:
     # Load the dataset
-    words = pd.DataFrame(requests.get(f"{FASTAPI_URL}/get_words").json()['words'])
+    words = get_words()
     matches = words[words['Word'].str.contains(searchterm, case=False, na=False)]
     return matches['Word'].tolist() if not matches.empty else []
 
@@ -37,8 +41,8 @@ def predict():
                 class_pred = result.get('class', 'N/A')
                 predicted_section = result.get("section", "N/A")
                 
-                st.success(f"The predicted class is: {class_pred}")
-                st.success(f"The predicted section is: {predicted_section}")
+                st.success(f"The predicted class is: {class_pred['0']}")
+                st.success(f"The predicted section is: {predicted_section['0']}")
             else:
                 st.error("Error occurred while fetching predictions.")
         else:
