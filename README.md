@@ -58,5 +58,5 @@ The Streamlit web application is designed to offer a realistic and interactive e
 ## TODO
 
 Jenkins
-Docker
+github-actions
 Flask_web_app

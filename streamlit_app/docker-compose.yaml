@@ -1,19 +1,21 @@
 services:
   fastapi:
-      build:
-        context: ./server
-        dockerfile: Dockerfile
-      container_name: fastapi_server
-      ports:
-        - "8081:8081"
-      volumes:
-        - ./server:/server  # Mount the server directory for development
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: fastapi_server
+    image: st-server
+    ports:
+      - "8081:8081"
+    volumes:
+      - ./server:/server  # Mount the server directory for development
 
   streamlit:
     build:
       context: ./app
       dockerfile: Dockerfile
     container_name: streamlit_app
+    image: st-app
     ports:
       - "8080:8080"
     volumes:

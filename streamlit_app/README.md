@@ -4,7 +4,7 @@ This directory hosts an interactive web application for classifying words into t
 
 For detailed information about the underlying pipeline, please visit the test_pypi directory in the main project.
 
-## Features
+## Web App Features
 
 1. **Client-Server Architecture**:
 
