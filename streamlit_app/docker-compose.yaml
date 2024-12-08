@@ -1,0 +1,24 @@
+services:
+  fastapi:
+      build:
+        context: ./server
+        dockerfile: Dockerfile
+      container_name: fastapi_server
+      ports:
+        - "8081:8081"
+      volumes:
+        - ./server:/server  # Mount the server directory for development
+
+  streamlit:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    container_name: streamlit_app
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./app:/app  # Mount the app directory for development
+    depends_on:
+      - fastapi # Ensure server starts first
+    environment:
+      - STREAMLIT_SERVER_ENABLECORS=false  # Allow requests from server

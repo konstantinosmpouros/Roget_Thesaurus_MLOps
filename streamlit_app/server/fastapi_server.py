@@ -119,4 +119,4 @@ def get_embeddings(embed_parser: Embeddings):
         raise HTTPException(status_code=404, detail="Embeddings do not exist for this number of dimensions.")
 
 if __name__ == '__main__':
-	uvicorn.run(app, host='127.0.0.1', port=8081)
+	uvicorn.run(app)

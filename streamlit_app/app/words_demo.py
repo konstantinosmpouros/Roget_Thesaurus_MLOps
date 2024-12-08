@@ -4,7 +4,7 @@ import pandas as pd
 import plotly.express as px
 
 
-FASTAPI_URL = "http://127.0.0.1:8081"
+FASTAPI_URL = "http://fastapi_server:8081"
 
 @st.cache_data
 def get_words():

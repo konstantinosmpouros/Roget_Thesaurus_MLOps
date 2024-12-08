@@ -3,7 +3,7 @@ import requests
 import streamlit as st
 from streamlit_searchbox import st_searchbox
 
-FASTAPI_URL = "http://127.0.0.1:8081"
+FASTAPI_URL = "http://fastapi_server:8081"
 
 def get_words():
     # Fetches words from the API
