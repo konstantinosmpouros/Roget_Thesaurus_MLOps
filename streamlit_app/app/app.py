@@ -1,5 +1,7 @@
 from pathlib import Path
 import streamlit as st
+import os
+from dotenv import load_dotenv
 
 dir_path = Path(__file__).parent
 
@@ -28,4 +30,8 @@ def run():
 
 
 if __name__ == "__main__":
+    # Load the .env file with tokens
+    load_dotenv()
+    os.environ['HUGGINGFACE_TOKEN'] = os.getenv('HUGGINGFACE_TOKEN')
+
     run()
