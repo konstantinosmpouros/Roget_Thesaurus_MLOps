@@ -7,6 +7,7 @@ import pandas as pd
 
 import torch
 from tqdm import tqdm
+# from huggingface_hub import login
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
 from sklearn.preprocessing import StandardScaler
@@ -23,24 +24,23 @@ sys.path.append(str(PACKAGE_ROOT))
 
 class Gemma_2B_Embeddings(BaseEstimator, TransformerMixin):
     def __init__(self):
+        # self.hf_login()
+        
         # Set the model name for Gemma 1.1 2B model
         self.model_name = "google/gemma-1.1-2b-it"
 
-    def load_model(self):
         # Load the tokenizer corresponding to the model
-        tokenizer = AutoTokenizer.from_pretrained(self.model_name)
+        self.tokenizer = AutoTokenizer.from_pretrained(self.model_name)
+        
         # Load the pre-trained model
-        model = AutoModelForCausalLM.from_pretrained(
+        self.model = AutoModelForCausalLM.from_pretrained(
             self.model_name,
             device_map='auto',
             torch_dtype=torch.bfloat16, 
         )
 
         # Set the model to evaluation mode
-        model.eval()
-
-        # Return model and tokenizer
-        return model, tokenizer
+        self.model.eval()
 
     # Method to set the random seed for reproducibility across runs
     def set_seed(self):
@@ -49,14 +49,22 @@ class Gemma_2B_Embeddings(BaseEstimator, TransformerMixin):
         torch.backends.cudnn.deterministic = True
         torch.backends.cudnn.benchmark = False
 
+    # def hf_login(self):
+    #     # Load Hugging Face token from environment variables
+    #     hf_token = os.getenv("HUGGINGFACE_TOKEN")
+    #     if not hf_token:
+    #         raise ValueError("Hugging Face token not found in environment variables. Set the 'HUGGINGFACE_TOKEN' variable.")
+    #     else:
+    #         print('HF Token successfully found!!')
+        
+    #     # Log in to Hugging Face using the token
+    #     login(token=hf_token)
+
     # The fit method is a placeholder since no fitting is required for this transformer
     def fit(self, X, y=None):
         return self
 
     def transform(self, X, batch_size=100):
-        # Load model
-        model, tokenizer = self.load_model()
-        
         # Set the seed for reproducibility
         self.set_seed()
         embeddings = [] # List to store the embeddings
@@ -67,7 +75,7 @@ class Gemma_2B_Embeddings(BaseEstimator, TransformerMixin):
             batch = X.iloc[start:start + batch_size, 0].tolist() 
 
             # Tokenize the batch of text
-            batch_tokenized  = tokenizer(batch,
+            batch_tokenized  = self.tokenizer(batch,
                                          truncation=True,
                                          padding='max_length',
                                          max_length=20,
@@ -75,7 +83,7 @@ class Gemma_2B_Embeddings(BaseEstimator, TransformerMixin):
 
             # Perform inference without updating gradients
             with torch.no_grad():
-                outputs = model(**batch_tokenized, output_hidden_states=True)
+                outputs = self.model(**batch_tokenized, output_hidden_states=True)
 
             # Extract the last hidden states from the model output
             last_hidden_states = outputs.hidden_states[-1]
